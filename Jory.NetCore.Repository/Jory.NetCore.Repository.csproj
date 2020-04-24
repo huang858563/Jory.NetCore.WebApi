@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="IRepositories\" />
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Jory.NetCore.Core\Jory.NetCore.Core.csproj" />
+    <ProjectReference Include="..\Jory.NetCore.Model\Jory.NetCore.Model.csproj" />
+  </ItemGroup>
+
+</Project>

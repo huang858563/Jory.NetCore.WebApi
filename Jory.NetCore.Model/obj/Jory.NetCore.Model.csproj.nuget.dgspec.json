@@ -1,0 +1,128 @@
+{
+  "format": 1,
+  "restore": {
+    "F:\\VS2019Project\\Jory.NetCore\\Jory.NetCore.Model\\Jory.NetCore.Model.csproj": {}
+  },
+  "projects": {
+    "F:\\VS2019Project\\Jory.NetCore\\Jory.NetCore.Core\\Jory.NetCore.Core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "F:\\VS2019Project\\Jory.NetCore\\Jory.NetCore.Core\\Jory.NetCore.Core.csproj",
+        "projectName": "Jory.NetCore.Core",
+        "projectPath": "F:\\VS2019Project\\Jory.NetCore\\Jory.NetCore.Core\\Jory.NetCore.Core.csproj",
+        "packagesPath": "C:\\Users\\F1041534\\.nuget\\packages\\",
+        "outputPath": "F:\\VS2019Project\\Jory.NetCore\\Jory.NetCore.Core\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\F1041534\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.200\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "F:\\VS2019Project\\Jory.NetCore\\Jory.NetCore.Model\\Jory.NetCore.Model.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "F:\\VS2019Project\\Jory.NetCore\\Jory.NetCore.Model\\Jory.NetCore.Model.csproj",
+        "projectName": "Jory.NetCore.Model",
+        "projectPath": "F:\\VS2019Project\\Jory.NetCore\\Jory.NetCore.Model\\Jory.NetCore.Model.csproj",
+        "packagesPath": "C:\\Users\\F1041534\\.nuget\\packages\\",
+        "outputPath": "F:\\VS2019Project\\Jory.NetCore\\Jory.NetCore.Model\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\F1041534\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {
+              "F:\\VS2019Project\\Jory.NetCore\\Jory.NetCore.Core\\Jory.NetCore.Core.csproj": {
+                "projectPath": "F:\\VS2019Project\\Jory.NetCore\\Jory.NetCore.Core\\Jory.NetCore.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "MySql.Data.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.19, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.200\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

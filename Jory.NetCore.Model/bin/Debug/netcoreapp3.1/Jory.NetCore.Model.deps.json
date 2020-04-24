@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "Jory.NetCore.Model/1.0.0": {
+        "dependencies": {
+          "Jory.NetCore.Core": "1.0.0"
+        },
+        "runtime": {
+          "Jory.NetCore.Model.dll": {}
+        }
+      },
+      "Jory.NetCore.Core/1.0.0": {
+        "runtime": {
+          "Jory.NetCore.Core.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Jory.NetCore.Model/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Jory.NetCore.Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

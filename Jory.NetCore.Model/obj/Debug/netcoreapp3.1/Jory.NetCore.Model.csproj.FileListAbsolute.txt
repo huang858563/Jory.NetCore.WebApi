@@ -1,0 +1,12 @@
+F:\VS2019Project\Jory.NetCore\Jory.NetCore.Model\bin\Debug\netcoreapp3.1\Jory.NetCore.Model.deps.json
+F:\VS2019Project\Jory.NetCore\Jory.NetCore.Model\bin\Debug\netcoreapp3.1\Jory.NetCore.Model.dll
+F:\VS2019Project\Jory.NetCore\Jory.NetCore.Model\bin\Debug\netcoreapp3.1\Jory.NetCore.Model.pdb
+F:\VS2019Project\Jory.NetCore\Jory.NetCore.Model\obj\Debug\netcoreapp3.1\Jory.NetCore.Model.csprojAssemblyReference.cache
+F:\VS2019Project\Jory.NetCore\Jory.NetCore.Model\obj\Debug\netcoreapp3.1\Jory.NetCore.Model.AssemblyInfoInputs.cache
+F:\VS2019Project\Jory.NetCore\Jory.NetCore.Model\obj\Debug\netcoreapp3.1\Jory.NetCore.Model.AssemblyInfo.cs
+F:\VS2019Project\Jory.NetCore\Jory.NetCore.Model\obj\Debug\netcoreapp3.1\Jory.NetCore.Model.dll
+F:\VS2019Project\Jory.NetCore\Jory.NetCore.Model\obj\Debug\netcoreapp3.1\Jory.NetCore.Model.pdb
+F:\VS2019Project\Jory.NetCore\Jory.NetCore.Model\bin\Debug\netcoreapp3.1\Jory.NetCore.Core.dll
+F:\VS2019Project\Jory.NetCore\Jory.NetCore.Model\bin\Debug\netcoreapp3.1\Jory.NetCore.Core.pdb
+F:\VS2019Project\Jory.NetCore\Jory.NetCore.Model\obj\Debug\netcoreapp3.1\Jory.NetCore.Model.csproj.CopyComplete
+F:\VS2019Project\Jory.NetCore\Jory.NetCore.Model\obj\Debug\netcoreapp3.1\Jory.NetCore.Model.csproj.CoreCompileInputs.cache
