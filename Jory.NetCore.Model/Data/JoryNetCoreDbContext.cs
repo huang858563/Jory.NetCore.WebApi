@@ -1,8 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Jory.NetCore.Model.Entities;
+﻿using Jory.NetCore.Model.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Jory.NetCore.Model.Data
 {
@@ -21,10 +18,6 @@ namespace Jory.NetCore.Model.Data
         {
             //modelBuilder.Entity<Company>().Property(x => x.Name).IsRequired().HasMaxLength(100);
             //modelBuilder.Entity<Company>().Property(x => x.Introduction).HasMaxLength(500);
-
-            //modelBuilder.Entity<Employee>().Property(x => x.EmpNo).IsRequired().HasMaxLength(10);
-            //modelBuilder.Entity<Employee>().Property(x => x.FirstName).IsRequired().HasMaxLength(50);
-            //modelBuilder.Entity<Employee>().Property(x => x.LastName).IsRequired().HasMaxLength(50);
 
             modelBuilder.Entity<ADUserT>().HasData(
                 new ADUserT()

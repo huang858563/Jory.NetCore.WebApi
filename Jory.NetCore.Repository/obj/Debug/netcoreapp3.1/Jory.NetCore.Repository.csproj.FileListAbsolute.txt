@@ -2,7 +2,6 @@ F:\VS2019Project\Jory.NetCore\Jory.NetCore.Repository\bin\Debug\netcoreapp3.1\Jo
 F:\VS2019Project\Jory.NetCore\Jory.NetCore.Repository\bin\Debug\netcoreapp3.1\Jory.NetCore.Repository.dll
 F:\VS2019Project\Jory.NetCore\Jory.NetCore.Repository\bin\Debug\netcoreapp3.1\Jory.NetCore.Repository.pdb
 F:\VS2019Project\Jory.NetCore\Jory.NetCore.Repository\obj\Debug\netcoreapp3.1\Jory.NetCore.Repository.csprojAssemblyReference.cache
-F:\VS2019Project\Jory.NetCore\Jory.NetCore.Repository\obj\Debug\netcoreapp3.1\Jory.NetCore.Repository.csproj.CoreCompileInputs.cache
 F:\VS2019Project\Jory.NetCore\Jory.NetCore.Repository\obj\Debug\netcoreapp3.1\Jory.NetCore.Repository.AssemblyInfoInputs.cache
 F:\VS2019Project\Jory.NetCore\Jory.NetCore.Repository\obj\Debug\netcoreapp3.1\Jory.NetCore.Repository.AssemblyInfo.cs
 F:\VS2019Project\Jory.NetCore\Jory.NetCore.Repository\obj\Debug\netcoreapp3.1\Jory.NetCore.Repository.dll
