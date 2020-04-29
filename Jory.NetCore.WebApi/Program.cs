@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NLog.Web;
 
 namespace Jory.NetCore.WebApi
 {
@@ -18,9 +14,11 @@ namespace Jory.NetCore.WebApi
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
+                .ConfigureLogging((context, loggingBuilder) =>
                 {
-                    webBuilder.UseStartup<Startup>();
-                });
+                    loggingBuilder.AddFilter("System", LogLevel.Warning);
+                    loggingBuilder.AddFilter("Microsoft", LogLevel.Warning);
+                }).UseNLog()
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
     }
 }

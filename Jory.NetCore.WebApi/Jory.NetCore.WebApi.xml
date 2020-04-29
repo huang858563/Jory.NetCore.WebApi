@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Jory.NetCore.WebApi</name>
+    </assembly>
+    <members>
+        <member name="T:Jory.NetCore.WebApi.Controllers.AdController">
+            <summary>
+            基礎功能
+            </summary>
+        </member>
+        <member name="T:Jory.NetCore.WebApi.Controllers.BdController">
+            <summary>
+            基本資料
+            </summary>
+        </member>
+        <member name="T:Jory.NetCore.WebApi.Controllers.HealthController">
+            <summary>
+            健康檢查
+            </summary>
+        </member>
+        <member name="M:Jory.NetCore.WebApi.Controllers.HealthController.Get">
+            <summary>
+            健康檢查方法
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

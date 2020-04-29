@@ -12,4 +12,7 @@
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <PkgNLog_Config Condition=" '$(PkgNLog_Config)' == '' ">C:\Users\F1041534\.nuget\packages\nlog.config\4.7.0</PkgNLog_Config>
+  </PropertyGroup>
 </Project>

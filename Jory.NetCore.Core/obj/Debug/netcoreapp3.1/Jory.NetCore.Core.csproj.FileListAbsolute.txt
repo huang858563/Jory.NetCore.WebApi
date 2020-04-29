@@ -1,6 +1,8 @@
+F:\VS2019Project\Jory.NetCore\Jory.NetCore.Core\bin\Debug\netcoreapp3.1\NLog.config
 F:\VS2019Project\Jory.NetCore\Jory.NetCore.Core\bin\Debug\netcoreapp3.1\Jory.NetCore.Core.deps.json
 F:\VS2019Project\Jory.NetCore\Jory.NetCore.Core\bin\Debug\netcoreapp3.1\Jory.NetCore.Core.dll
 F:\VS2019Project\Jory.NetCore\Jory.NetCore.Core\bin\Debug\netcoreapp3.1\Jory.NetCore.Core.pdb
+F:\VS2019Project\Jory.NetCore\Jory.NetCore.Core\obj\Debug\netcoreapp3.1\Jory.NetCore.Core.csproj.CoreCompileInputs.cache
 F:\VS2019Project\Jory.NetCore\Jory.NetCore.Core\obj\Debug\netcoreapp3.1\Jory.NetCore.Core.AssemblyInfoInputs.cache
 F:\VS2019Project\Jory.NetCore\Jory.NetCore.Core\obj\Debug\netcoreapp3.1\Jory.NetCore.Core.AssemblyInfo.cs
 F:\VS2019Project\Jory.NetCore\Jory.NetCore.Core\obj\Debug\netcoreapp3.1\Jory.NetCore.Core.dll

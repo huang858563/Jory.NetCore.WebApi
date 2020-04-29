@@ -1,75 +1,61 @@
-﻿using System;
+﻿using Jory.NetCore.Core.Interfaces;
+using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Jory.NetCore.Core.Interfaces;
-using Jory.NetCore.Model.Entities;
+using Jory.NetCore.Model.Models;
 
 namespace Jory.NetCore.Repository.IRepositories
 {
-    public interface IBaseRep<T, in TKey>: IRepository,IDisposable where T :BaseEntity<TKey>
+    public interface IBaseRep<TEntity> : IRepository where TEntity : class, new()
     {
-        #region 查询
+        Task<TEntity> QueryById(object objId, bool blnUseCache = false);
 
-        T GetById(params TKey[] ids);
+        Task<List<TEntity>> QueryByIDs(object[] lstIds);
 
-        Task<T> GetByIdAsync(params TKey[] ids);
+        Task<int> Add(TEntity model, Expression<Func<TEntity, object>> insertColumns = null);
 
-        T Get(Expression<Func<T, bool>> whereLambda);
+        Task<int> Add(List<TEntity> listEntity);
 
-        IQueryable<T> GetList();
+        Task<bool> DeleteById(object id);
 
-        IQueryable<T> GetList(Expression<Func<T, bool>> whereLambda);
+        Task<bool> Delete(TEntity model);
 
-        (IQueryable<T>,int) GetPagedList(int pageSize, int pageIndex, Expression<Func<T, bool>> whereLambda, Expression<Func<T, bool>> orderByLambda);
+        Task<bool> DeleteByIds(object[] ids);
 
-        #endregion
+        Task<bool> Update(TEntity entity, string strWhere);
 
-        #region 插入
+        Task<bool> Update(object operateAnonymousObjects);
 
-        int Insert(T model, IDbTransaction transaction =null);
+        Task<bool> Update(TEntity entity, List<string> lstColumns = null, List<string> lstIgnoreColumns = null,
+            string strWhere = "");
 
-        Task<int> InsertAsync(T model, IDbTransaction transaction = null);
+        Task<List<TEntity>> Query();
+        Task<List<TEntity>> Query(string strWhere);
+        Task<List<TEntity>> Query(Expression<Func<TEntity, bool>> whereExpression);
+        Task<List<TEntity>> Query(Expression<Func<TEntity, bool>> whereExpression, string strOrderByFields);
 
-        int InsertList(List<T> models, IDbTransaction transaction = null);
+        Task<List<TEntity>> Query(Expression<Func<TEntity, bool>> whereExpression,
+            Expression<Func<TEntity, object>> orderByExpression, bool isAsc = true);
 
-        Task<int> InsertListAsync(List<T> models, IDbTransaction transaction = null);
+        Task<List<TEntity>> Query(string strWhere, string strOrderByFields);
 
-        #endregion
+        Task<List<TEntity>> Query(Expression<Func<TEntity, bool>> whereExpression, int intTop, string strOrderByFields);
+        Task<List<TEntity>> Query(string strWhere, int intTop, string strOrderByFileds);
 
-        #region 更新
+        Task<List<TEntity>> Query(
+            Expression<Func<TEntity, bool>> whereExpression, int intPageIndex, int intPageSize,
+            string strOrderByFields);
 
-        bool Update(T model, IDbTransaction transaction = null);
+        Task<List<TEntity>> Query(string strWhere, int intPageIndex, int intPageSize, string strOrderByFields);
 
-        Task<bool> UpdateAsync(T model, IDbTransaction transaction = null);
 
-        int Update(Expression<Func<T, bool>> whereLambda, Expression<Func<T, T>> updateLambda);
+        Task<PagedList<TEntity>> QueryPage(Expression<Func<TEntity, bool>> whereExpression, int intPageIndex = 1,
+            int intPageSize = 20, string strOrderByFields = null);
 
-        Task<int> UpdateAsync(Expression<Func<T, bool>> whereLambda, Expression<Func<T, T>> updateLambda);
-
-        #endregion
-
-        #region 删除
-
-        bool Delete(T model, IDbTransaction transaction = null);
-
-        Task<bool> DeleteAsync(T model, IDbTransaction transaction = null);
-
-        int Delete(params TKey[] ids);
-
-        Task<int> DeleteAsync(params TKey[] ids);
-
-        int Delete(Expression<Func<T, bool>> whereLambda);
-        Task<int> DeleteAsync(Expression<Func<T, bool>> whereLambda);
-        #endregion
-
-        bool IsExist(params TKey[] ids);
-
-        bool IsExist(Expression<Func<T, bool>> whereLambda);
-
-        int SaveChanges();
+        Task<List<TResult>> QueryMuch<T, T2, T3, TResult>(
+            Expression<Func<T, T2, T3, object[]>> joinExpression,
+            Expression<Func<T, T2, T3, TResult>> selectExpression,
+            Expression<Func<T, T2, T3, bool>> whereLambda = null) where T : class, new();
     }
 }

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "TMuEo6Nbdms9SY1Hd4757M5xI40f6NfzU2kb56uPtXpNpSIJik40CzTwPHXM4OK6+c33Qf1ikGSVOXQa02u/Ng==",
+  "dgSpecHash": "6c3N9Cn30yQvrV9kNi3HiJk40zqMNCW6KayFel1qHv74mVDE2A7uOGnzQOEe2WJOZEuBlHvqGpgxZ9ZvyEp4qQ==",
   "success": true,
   "projectFilePath": "F:\\VS2019Project\\Jory.NetCore\\Jory.NetCore.Model\\Jory.NetCore.Model.csproj",
   "expectedPackageFiles": [
@@ -34,6 +34,11 @@
     "C:\\Users\\F1041534\\.nuget\\packages\\mysql.data\\8.0.20\\mysql.data.8.0.20.nupkg.sha512",
     "C:\\Users\\F1041534\\.nuget\\packages\\mysql.data.entityframeworkcore\\8.0.20\\mysql.data.entityframeworkcore.8.0.20.nupkg.sha512",
     "C:\\Users\\F1041534\\.nuget\\packages\\netstandard.library\\1.6.1\\netstandard.library.1.6.1.nupkg.sha512",
+    "C:\\Users\\F1041534\\.nuget\\packages\\nlog\\4.7.0\\nlog.4.7.0.nupkg.sha512",
+    "C:\\Users\\F1041534\\.nuget\\packages\\nlog.config\\4.7.0\\nlog.config.4.7.0.nupkg.sha512",
+    "C:\\Users\\F1041534\\.nuget\\packages\\nlog.extensions.logging\\1.6.2\\nlog.extensions.logging.1.6.2.nupkg.sha512",
+    "C:\\Users\\F1041534\\.nuget\\packages\\nlog.schema\\4.7.0\\nlog.schema.4.7.0.nupkg.sha512",
+    "C:\\Users\\F1041534\\.nuget\\packages\\nlog.web.aspnetcore\\4.9.2\\nlog.web.aspnetcore.4.9.2.nupkg.sha512",
     "C:\\Users\\F1041534\\.nuget\\packages\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
     "C:\\Users\\F1041534\\.nuget\\packages\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
     "C:\\Users\\F1041534\\.nuget\\packages\\runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",

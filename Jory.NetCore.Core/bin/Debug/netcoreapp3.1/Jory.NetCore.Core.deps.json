@@ -8,7 +8,10 @@
     ".NETCoreApp,Version=v3.1": {
       "Jory.NetCore.Core/1.0.0": {
         "dependencies": {
-          "Microsoft.EntityFrameworkCore": "3.1.3"
+          "Microsoft.EntityFrameworkCore": "3.1.3",
+          "Microsoft.EntityFrameworkCore.Relational": "3.1.3",
+          "NLog.Config": "4.7.0",
+          "NLog.Web.AspNetCore": "4.9.2"
         },
         "runtime": {
           "Jory.NetCore.Core.dll": {}
@@ -59,6 +62,17 @@
         }
       },
       "Microsoft.EntityFrameworkCore.Analyzers/3.1.3": {},
+      "Microsoft.EntityFrameworkCore.Relational/3.1.3": {
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "3.1.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.EntityFrameworkCore.Relational.dll": {
+            "assemblyVersion": "3.1.3.0",
+            "fileVersion": "3.100.320.12804"
+          }
+        }
+      },
       "Microsoft.Extensions.Caching.Abstractions/3.1.3": {
         "dependencies": {
           "Microsoft.Extensions.Primitives": "3.1.3"
@@ -178,6 +192,44 @@
           }
         }
       },
+      "NLog/4.7.0": {
+        "runtime": {
+          "lib/netstandard2.0/NLog.dll": {
+            "assemblyVersion": "4.0.0.0",
+            "fileVersion": "4.7.0.11381"
+          }
+        }
+      },
+      "NLog.Config/4.7.0": {
+        "dependencies": {
+          "NLog": "4.7.0",
+          "NLog.Schema": "4.7.0"
+        }
+      },
+      "NLog.Extensions.Logging/1.6.2": {
+        "dependencies": {
+          "Microsoft.Extensions.Logging": "3.1.3",
+          "NLog": "4.7.0"
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/NLog.Extensions.Logging.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.6.2.1321"
+          }
+        }
+      },
+      "NLog.Schema/4.7.0": {},
+      "NLog.Web.AspNetCore/4.9.2": {
+        "dependencies": {
+          "NLog.Extensions.Logging": "1.6.2"
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/NLog.Web.AspNetCore.dll": {
+            "assemblyVersion": "4.0.0.0",
+            "fileVersion": "4.9.2.1619"
+          }
+        }
+      },
       "System.Collections.Immutable/1.7.0": {},
       "System.ComponentModel.Annotations/4.7.0": {},
       "System.Diagnostics.DiagnosticSource/4.7.0": {}
@@ -223,6 +275,13 @@
       "sha512": "sha512-FrGD6Os1wCM7dq7kCvFMR1ixEo0VsceqYBpKm6DuF8nDlyHGCYRnaeagMjTraWCtZz0jpqGu83qD880E/NgSBA==",
       "path": "microsoft.entityframeworkcore.analyzers/3.1.3",
       "hashPath": "microsoft.entityframeworkcore.analyzers.3.1.3.nupkg.sha512"
+    },
+    "Microsoft.EntityFrameworkCore.Relational/3.1.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-uL8nPKSGtWkqi613tGj2fbFGskm4k6KKE7rRcWFEQx0tbrOyMiowL4gErFLa0izmoSE1uWhEdqxq1iE1C3yCmw==",
+      "path": "microsoft.entityframeworkcore.relational/3.1.3",
+      "hashPath": "microsoft.entityframeworkcore.relational.3.1.3.nupkg.sha512"
     },
     "Microsoft.Extensions.Caching.Abstractions/3.1.3": {
       "type": "package",
@@ -300,6 +359,41 @@
       "sha512": "sha512-5gK6qeq9CBCHBfB3Tim3jCJTLafT9FXFBAZZq39rC8adz8mxcjVAuQSw3jGgHqoRk0jwtXKFhXJUVur8vfeuFg==",
       "path": "microsoft.extensions.primitives/3.1.3",
       "hashPath": "microsoft.extensions.primitives.3.1.3.nupkg.sha512"
+    },
+    "NLog/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ch4piF/ifV6ZapFx5Vj8MGaiCZkztHwTMFghJJSOkA/LeWcNdvqW8VzRw7ZMvS8anUmsH81FV334Vay6+ja4Kg==",
+      "path": "nlog/4.7.0",
+      "hashPath": "nlog.4.7.0.nupkg.sha512"
+    },
+    "NLog.Config/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-cNNAdC96/l6xsIwmlIV4TiNl6Rq8ETiI9sYjNLj8psgAVVv51FqPnylFQ/9Gd/N+ubvaQuiA+9+50XysD/n8pQ==",
+      "path": "nlog.config/4.7.0",
+      "hashPath": "nlog.config.4.7.0.nupkg.sha512"
+    },
+    "NLog.Extensions.Logging/1.6.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-HKHxPdCly6n3Ln0i+H/po5Og9XyNAizMpM9TLikk6vWgtVSNlES9hMRgiuvzFMK1ssOU8zmrYNsr4s7w+IgiSg==",
+      "path": "nlog.extensions.logging/1.6.2",
+      "hashPath": "nlog.extensions.logging.1.6.2.nupkg.sha512"
+    },
+    "NLog.Schema/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-wNPtswvUtwQMqvUDUMij0AP5NeXYcWgcI+GLAS2cZOi+EMi60l0f/Azaa0zgyliHQBMeveTSgkRtEaipyvHV/g==",
+      "path": "nlog.schema/4.7.0",
+      "hashPath": "nlog.schema.4.7.0.nupkg.sha512"
+    },
+    "NLog.Web.AspNetCore/4.9.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-C12FzK0z67Y6FC+NDckeZzJmJZmnM+fKCmKbe7at2XBj1O58PPhOZYnKC8Ryw4u+3cyHiMBVlZYwRhWJXs6RFg==",
+      "path": "nlog.web.aspnetcore/4.9.2",
+      "hashPath": "nlog.web.aspnetcore.4.9.2.nupkg.sha512"
     },
     "System.Collections.Immutable/1.7.0": {
       "type": "package",
