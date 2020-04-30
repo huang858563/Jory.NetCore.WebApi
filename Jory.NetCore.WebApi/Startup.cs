@@ -49,10 +49,9 @@ namespace Jory.NetCore.WebApi
 
                 //options.ReturnHttpNotAcceptable = true;
                 //options.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
-            }).AddXmlDataContractSerializerFormatters();
+            }); //.AddXmlDataContractSerializerFormatters();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            //services.AddTransient<ICompanyRepository, CompanyRepository>();
             services.AddDbContext<JoryNetCoreDbContext>(options =>
             {
                 if (bool.Parse(Configuration["EFCoreLogEnabled"]))
@@ -63,19 +62,12 @@ namespace Jory.NetCore.WebApi
                 options.UseSqlite("Data Source=JoryDB.db", p => p.MigrationsAssembly("Jory.NetCore.Model"));
             });
 
-            //services.AddScoped<IJwtTokenValidationService, JwtTokenValidationService>();
-           // services.AddScoped<IBaseRep, Bas>();
-            //services.AddScoped<IUserRep, UserRep>(x=>new UserRep(x.GetService<JoryNetCoreDbContext>(), DbCategory.Sqlite ));
-
             services.AddDistributedMemoryCache();
 
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin();
-                    });
+                    builder => { builder.AllowAnyOrigin(); });
 
                 options.AddPolicy("AllowAll",
                     builder =>
@@ -87,7 +79,7 @@ namespace Jory.NetCore.WebApi
 
             });
 
-          
+
             if (jwtBearerOption.Enabled)
             {
                 services.AddAuthentication(options =>
@@ -140,7 +132,7 @@ namespace Jory.NetCore.WebApi
                     Version = "v1", //版本 
                     Title = "Jory.NetCore.WebApi 接口文档-NetCore3.1", //标题
                     Description = "Jory.NetCore.WebApi Http API v1", //描述
-                    Contact = new OpenApiContact { Name = "jory", Email = "", Url = new Uri("https://www.jory.top") }
+                    Contact = new OpenApiContact {Name = "jory", Email = "", Url = new Uri("https://www.jory.top")}
                     //License = new OpenApiLicense { Name = "jory", Url = new Uri("http://jory.cnblogs.com") }
                 });
                 if (jwtBearerOption.Enabled)
@@ -175,9 +167,7 @@ namespace Jory.NetCore.WebApi
                 var xmlPath = Path.Combine(basePath, "Jory.NetCore.WebApi.xml"); //这个就是刚刚配置的xml文件名
                 c.IncludeXmlComments(xmlPath, true); //默认的第二个参数是false,对方法的注释
 
-
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Jory.NetCore.Model.xml"));
-
 
                 //#region Jwt
                 ////开启权限小锁
@@ -193,7 +183,6 @@ namespace Jory.NetCore.WebApi
                 //    In = ParameterLocation.Header,//jwt默认存放Authorization信息的位置(请求头中)
                 //    Type = SecuritySchemeType.ApiKey
                 //});
-
 
                 //#endregion
             });
