@@ -4,7 +4,7 @@ namespace Jory.NetCore.WebApi.Models
 {
     public class LoginModel
     {
-        [Required(ErrorMessage = "用戶名不能為空")]
+        [Required(ErrorMessage = "N00001")]
         public string UserName { get; set; }
 
         [Required(ErrorMessage = "密碼不能為空")]

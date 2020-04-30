@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -30,6 +31,18 @@
     <ProjectReference Include="..\Jory.NetCore.Core\Jory.NetCore.Core.csproj" />
     <ProjectReference Include="..\Jory.NetCore.Model\Jory.NetCore.Model.csproj" />
     <ProjectReference Include="..\Jory.NetCore.Repository\Jory.NetCore.Repository.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\SharedResource.en-US.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\SharedResource.zh-CN.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\SharedResource.zh-TW.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
 

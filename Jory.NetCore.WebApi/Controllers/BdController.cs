@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Jory.NetCore.Core.Helpers;
 using Jory.NetCore.WebApi.Common;
+using Jory.NetCore.WebApi.Resources;
+using Microsoft.Extensions.Localization;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace Jory.NetCore.WebApi.Controllers
@@ -23,12 +25,14 @@ namespace Jory.NetCore.WebApi.Controllers
         private readonly ILogger<BdController> _logger;
         private readonly IUserRep _userRep;
         private readonly IMapper _mapper;
+        private readonly IStringLocalizer _localizer;
 
-        public BdController(ILogger<BdController> logger, IUserRep userRep, IMapper mapper)
+        public BdController(ILogger<BdController> logger, IUserRep userRep, IMapper mapper,IStringLocalizer localizer)
         {
             _logger = logger;
             _userRep = userRep;
             _mapper = mapper;
+            _localizer = localizer;
         }
 
         /// <summary>
@@ -51,11 +55,11 @@ namespace Jory.NetCore.WebApi.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ADUserT), Status200OK)]
         [ProducesResponseType(typeof(string), Status404NotFound)]
-        public async Task<ActionResult> Get(string id)
+        public async Task<ActionResult> Get(int id)
         {
             var user = await _userRep.FindEntityAsync<ADUserT>(id);
             if (user != null) return Ok(user);
-            return NotFound("Cannot find key.");
+            return NotFound(_localizer["N00001"]);
         }
 
         /// <summary>

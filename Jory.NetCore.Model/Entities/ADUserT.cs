@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Jory.NetCore.Model.Entities
 {
@@ -18,7 +19,7 @@ namespace Jory.NetCore.Model.Entities
         [NotMapped]
         public string? LoginPwd { get; set; }
         
-        [IgnoreDataMember]
+        [JsonIgnore]
         public string? LoginPwdHash { get; set; }
 
         public string UserName { get; set; }

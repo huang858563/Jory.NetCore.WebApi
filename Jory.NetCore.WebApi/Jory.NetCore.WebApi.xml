@@ -30,7 +30,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Jory.NetCore.WebApi.Controllers.BdController.Get(System.String)">
+        <member name="M:Jory.NetCore.WebApi.Controllers.BdController.Get(System.Int32)">
             <summary>
             有参GET请求
             </summary>
