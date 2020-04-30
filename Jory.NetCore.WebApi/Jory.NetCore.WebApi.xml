@@ -4,6 +4,16 @@
         <name>Jory.NetCore.WebApi</name>
     </assembly>
     <members>
+        <member name="T:Jory.NetCore.WebApi.Common.EfCoreLoggerProvider">
+            <summary>
+            EFCoreLoggerProvider
+            </summary>
+        </member>
+        <member name="T:Jory.NetCore.WebApi.Common.EfLogger">
+            <summary>
+            EFLogger
+            </summary>
+        </member>
         <member name="T:Jory.NetCore.WebApi.Controllers.AdController">
             <summary>
             基礎功能
@@ -13,6 +23,33 @@
             <summary>
             基本資料
             </summary>
+        </member>
+        <member name="M:Jory.NetCore.WebApi.Controllers.BdController.Get">
+            <summary>
+            无参GET请求
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Jory.NetCore.WebApi.Controllers.BdController.Get(System.String)">
+            <summary>
+            有参GET请求
+            </summary>
+            <param name="id">用户编号id</param>
+            <returns></returns>
+        </member>
+        <member name="M:Jory.NetCore.WebApi.Controllers.BdController.Put(Jory.NetCore.Model.Entities.ADUserT)">
+            <summary>
+            PUT请求，新增/覆盖一条数据。
+            </summary>
+            <param name="value">用户JSON对象</param>
+            <returns>是否执行成功</returns>
+        </member>
+        <member name="M:Jory.NetCore.WebApi.Controllers.BdController.Delete(System.String)">
+            <summary>
+            Delete请求，删除一条数据
+            </summary>
+            <param name="id">删除数据记录的id</param>
+            <returns>是否执行成功</returns>
         </member>
         <member name="T:Jory.NetCore.WebApi.Controllers.HealthController">
             <summary>

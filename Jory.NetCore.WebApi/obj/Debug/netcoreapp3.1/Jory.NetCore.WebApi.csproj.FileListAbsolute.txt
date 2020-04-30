@@ -177,6 +177,11 @@ F:\VS2019Project\Jory.NetCore\Jory.NetCore.WebApi\bin\Debug\netcoreapp3.1\Micros
 F:\VS2019Project\Jory.NetCore\Jory.NetCore.WebApi\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 F:\VS2019Project\Jory.NetCore\Jory.NetCore.WebApi\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Tokens.dll
 F:\VS2019Project\Jory.NetCore\Jory.NetCore.WebApi\bin\Debug\netcoreapp3.1\System.IdentityModel.Tokens.Jwt.dll
+F:\VS2019Project\Jory.NetCore\Jory.NetCore.WebApi\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Design.dll
+F:\VS2019Project\Jory.NetCore\Jory.NetCore.WebApi\bin\Debug\netcoreapp3.1\Autofac.dll
+F:\VS2019Project\Jory.NetCore\Jory.NetCore.WebApi\bin\Debug\netcoreapp3.1\Autofac.Extensions.DependencyInjection.dll
+F:\VS2019Project\Jory.NetCore\Jory.NetCore.WebApi\bin\Debug\netcoreapp3.1\AutoMapper.dll
+F:\VS2019Project\Jory.NetCore\Jory.NetCore.WebApi\bin\Debug\netcoreapp3.1\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 F:\VS2019Project\Jory.NetCore\Jory.NetCore.WebApi\obj\Debug\netcoreapp3.1\Jory.NetCore.WebApi.csproj.CoreCompileInputs.cache
 F:\VS2019Project\Jory.NetCore\Jory.NetCore.WebApi\obj\Debug\netcoreapp3.1\Jory.NetCore.WebApi.MvcApplicationPartsAssemblyInfo.cs
 F:\VS2019Project\Jory.NetCore\Jory.NetCore.WebApi\obj\Debug\netcoreapp3.1\Jory.NetCore.WebApi.MvcApplicationPartsAssemblyInfo.cache

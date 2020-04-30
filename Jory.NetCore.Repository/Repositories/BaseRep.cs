@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
@@ -474,7 +475,8 @@ namespace Jory.NetCore.Repository.Repositories
         {
             DbContext.Set<T>().Attach(entity);
             var entry = DbContext.Entry(entity);
-            var props = entity.GetType().GetProperties();
+            var props = entity.GetType().GetProperties()
+                .Where(pi => !Attribute.IsDefined(pi, typeof(NotMappedAttribute)));
             foreach (var prop in props)
             {
                 //非null且非PrimaryKey
@@ -499,7 +501,8 @@ namespace Jory.NetCore.Repository.Repositories
             {
                 DbContext.Set<T>().Attach(entity);
                 var entry = DbContext.Entry(entity);
-                var props = entity.GetType().GetProperties();
+                var props = entity.GetType().GetProperties()
+                    .Where(pi => !Attribute.IsDefined(pi, typeof(NotMappedAttribute)));
                 foreach (var prop in props)
                 {
                     //非null且非PrimaryKey
@@ -528,7 +531,8 @@ namespace Jory.NetCore.Repository.Repositories
             DbContext.ChangeTracker.Entries<T>().ToList().ForEach(o => o.State = EntityState.Detached);
             foreach (var instance in instances)
             {
-                var properties = typeof(T).GetProperties();
+                var properties = typeof(T).GetProperties()
+                    .Where(pi => !Attribute.IsDefined(pi, typeof(NotMappedAttribute)));
                 foreach (var property in properties)
                 {
                     var isKey = property.GetCustomAttributes(typeof(KeyAttribute), false).Any();
@@ -559,7 +563,8 @@ namespace Jory.NetCore.Repository.Repositories
         {
             DbContext.Set<T>().Attach(entity);
             var entry = DbContext.Entry(entity);
-            var props = entity.GetType().GetProperties();
+            var props = entity.GetType().GetProperties()
+                .Where(pi => !Attribute.IsDefined(pi, typeof(NotMappedAttribute)));
             foreach (var prop in props)
             {
                 //非null且非PrimaryKey
@@ -584,7 +589,8 @@ namespace Jory.NetCore.Repository.Repositories
             {
                 DbContext.Set<T>().Attach(entity);
                 var entry = DbContext.Entry(entity);
-                var props = entity.GetType().GetProperties();
+                var props = entity.GetType().GetProperties()
+                    .Where(pi => !Attribute.IsDefined(pi, typeof(NotMappedAttribute)));
                 foreach (var prop in props)
                 {
                     //非null且非PrimaryKey
@@ -613,7 +619,8 @@ namespace Jory.NetCore.Repository.Repositories
             DbContext.ChangeTracker.Entries<T>().ToList().ForEach(o => o.State = EntityState.Detached);
             foreach (var instance in instances)
             {
-                var properties = typeof(T).GetProperties();
+                var properties = typeof(T).GetProperties()
+                    .Where(pi => !Attribute.IsDefined(pi, typeof(NotMappedAttribute)));
                 foreach (var property in properties)
                 {
                     var isKey = property.GetCustomAttributes(typeof(KeyAttribute), false).Count() > 0;
@@ -715,7 +722,7 @@ namespace Jory.NetCore.Repository.Repositories
         /// <returns>返回实体</returns>
         public T FindEntity<T>(Expression<Func<T, bool>> predicate) where T : class
         {
-            return DbContext.Set<T>().Where(predicate).FirstOrDefault();
+            return DbContext.Set<T>().Where(predicate).AsNoTracking().FirstOrDefault();
         }
 
         /// <summary>
@@ -729,7 +736,7 @@ namespace Jory.NetCore.Repository.Repositories
         public TS FindEntity<T, TS>(Expression<Func<T, TS>> selector, Expression<Func<T, bool>> predicate)
             where T : class
         {
-            return DbContext.Set<T>().Where(predicate).Select(selector).FirstOrDefault();
+            return DbContext.Set<T>().Where(predicate).AsNoTracking().Select(selector).FirstOrDefault();
         }
 
         /// <summary>
@@ -796,7 +803,7 @@ namespace Jory.NetCore.Repository.Repositories
         /// <returns>返回实体</returns>
         public async Task<T> FindEntityAsync<T>(Expression<Func<T, bool>> predicate) where T : class
         {
-            return await DbContext.Set<T>().Where(predicate).FirstOrDefaultAsync();
+            return await DbContext.Set<T>().Where(predicate).AsNoTracking().FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -810,7 +817,7 @@ namespace Jory.NetCore.Repository.Repositories
         public async Task<TS> FindEntityAsync<T, TS>(Expression<Func<T, TS>> selector,
             Expression<Func<T, bool>> predicate) where T : class
         {
-            return await DbContext.Set<T>().Where(predicate).Select(selector).FirstOrDefaultAsync();
+            return await DbContext.Set<T>().Where(predicate).AsNoTracking().Select(selector).FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -1517,23 +1524,31 @@ namespace Jory.NetCore.Repository.Repositories
                     {
                         if (orderTypes[i] == OrderByDirection.Descending)
                         {
-                            order = i > 0 ? order.ThenByDescending(newExpression.Members[i].Name) : query.OrderByDescending(newExpression.Members[i].Name);
+                            order = i > 0
+                                ? order.ThenByDescending(newExpression.Members[i].Name)
+                                : query.OrderByDescending(newExpression.Members[i].Name);
                         }
                         else
                         {
-                            order = i > 0 ? order.ThenBy(newExpression.Members[i].Name) : query.OrderBy(newExpression.Members[i].Name);
+                            order = i > 0
+                                ? order.ThenBy(newExpression.Members[i].Name)
+                                : query.OrderBy(newExpression.Members[i].Name);
                         }
                     }
                     else
                     {
-                        order = i > 0 ? order.ThenBy(newExpression.Members[i].Name) : query.OrderBy(newExpression.Members[i].Name);
+                        order = i > 0
+                            ? order.ThenBy(newExpression.Members[i].Name)
+                            : query.OrderBy(newExpression.Members[i].Name);
                     }
                 }
             }
             //单个字段排序
             else
             {
-                order = orderTypes.FirstOrDefault() == OrderByDirection.Descending ? query.OrderByDescending(orderField) : query.OrderBy(orderField);
+                order = orderTypes.FirstOrDefault() == OrderByDirection.Descending
+                    ? query.OrderByDescending(orderField)
+                    : query.OrderBy(orderField);
             }
 
             //分页
@@ -1570,23 +1585,31 @@ namespace Jory.NetCore.Repository.Repositories
                     {
                         if (orderTypes[i] == OrderByDirection.Descending)
                         {
-                            order = i > 0 ? order.ThenByDescending(newExpression.Members[i].Name) : query.OrderByDescending(newExpression.Members[i].Name);
+                            order = i > 0
+                                ? order.ThenByDescending(newExpression.Members[i].Name)
+                                : query.OrderByDescending(newExpression.Members[i].Name);
                         }
                         else
                         {
-                            order = i > 0 ? order.ThenBy(newExpression.Members[i].Name) : query.OrderBy(newExpression.Members[i].Name);
+                            order = i > 0
+                                ? order.ThenBy(newExpression.Members[i].Name)
+                                : query.OrderBy(newExpression.Members[i].Name);
                         }
                     }
                     else
                     {
-                        order = i > 0 ? order.ThenBy(newExpression.Members[i].Name) : query.OrderBy(newExpression.Members[i].Name);
+                        order = i > 0
+                            ? order.ThenBy(newExpression.Members[i].Name)
+                            : query.OrderBy(newExpression.Members[i].Name);
                     }
                 }
             }
             //单个字段排序
             else
             {
-                order = orderTypes.FirstOrDefault() == OrderByDirection.Descending ? query.OrderByDescending(orderField) : query.OrderBy(orderField);
+                order = orderTypes.FirstOrDefault() == OrderByDirection.Descending
+                    ? query.OrderByDescending(orderField)
+                    : query.OrderBy(orderField);
             }
 
             //分页
@@ -1628,18 +1651,19 @@ namespace Jory.NetCore.Repository.Repositories
                     ? $"ORDER BY {orderField}"
                     : $"ORDER BY {orderField} {(isAscending ? "ASC" : "DESC")}";
             }
+
             var type = typeof(T);
             switch (DbCategory)
             {
                 case DbCategory.SqlServer:
                 {
-                    if(orderField.IsNullOrEmpty())
+                    if (orderField.IsNullOrEmpty())
                     {
                         orderField = "ORDER BY (SELECT 0)";
                     }
 
                     var guid = Guid.NewGuid().ToString().Replace("-", "").ToUpper();
-                  
+
                     if (!type.Name.Contains("Dictionary`2") && type.IsClass && type.Name != "Object" &&
                         type.Name != "String")
                     {
@@ -1719,24 +1743,41 @@ namespace Jory.NetCore.Repository.Repositories
 
                 case DbCategory.Oracle:
                 {
-                    var total = DbContext.SqlQuery<long>($"SELECT COUNT(1) AS Total FROM ({sql}) T", parameter).FirstOrDefault();
-                    var list = DbContext.SqlQuery<T>($"SELECT * FROM (SELECT X.*,ROWNUM AS RowNumber FROM ({sql} {orderField}) X WHERE ROWNUM <= {pageSize * pageIndex}) T WHERE T.RowNumber >= {pageSize * (pageIndex - 1) + 1}", parameter);
+                    var total = DbContext.SqlQuery<long>($"SELECT COUNT(1) AS Total FROM ({sql}) T", parameter)
+                        .FirstOrDefault();
+                    var list = DbContext.SqlQuery<T>(
+                        $"SELECT * FROM (SELECT X.*,ROWNUM AS RowNumber FROM ({sql} {orderField}) X WHERE ROWNUM <= {pageSize * pageIndex}) T WHERE T.RowNumber >= {pageSize * (pageIndex - 1) + 1}",
+                        parameter);
                     return (list?.ToList(), total);
-                    }
+                }
+
                 case DbCategory.NpgSql:
+                {
+                    var guid = Guid.NewGuid().ToString().Replace("-", "").ToUpper();
+                    if (!type.Name.Contains("Dictionary`2") && type.IsClass && type.Name != "Object" &&
+                        type.Name != "String")
                     {
-                        var guid = Guid.NewGuid().ToString().Replace("-", "").ToUpper();
-                        if (!type.Name.Contains("Dictionary`2") && type.IsClass && type.Name != "Object" && type.Name != "String")
-                        {
-                            var query = DbContext.SqlQueryMultiple<dynamic>($"DROP TABLE IF EXISTS TEMPORARY_{guid};CREATE TEMPORARY TABLE TEMPORARY_{guid} AS SELECT * FROM ({sql}) AS T;SELECT COUNT(1) AS Total FROM TEMPORARY_{guid};SELECT * FROM TEMPORARY_{guid} AS X {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};DROP TABLE TEMPORARY_{guid};", parameter);
-                            return ((query.LastOrDefault() ?? throw new ArgumentNullException()).Select(o => (o as IDictionary<string, object>).ToEntity<T>()).ToList(), Convert.ToInt64((query.FirstOrDefault() ?? throw new ArgumentNullException()).FirstOrDefault()?.Total ?? 0));
-                        }
-                        else
-                        {
-                            var query = DbContext.SqlQueryMultiple<T>($"DROP TABLE IF EXISTS TEMPORARY_{guid};CREATE TEMPORARY TABLE TEMPORARY_{guid} AS SELECT * FROM ({sql}) AS T;SELECT COUNT(1) AS Total FROM TEMPORARY_{guid};SELECT * FROM TEMPORARY_{guid} AS X {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};DROP TABLE TEMPORARY_{guid};", parameter);
-                            return (query.LastOrDefault(), Convert.ToInt64(((query.FirstOrDefault() ?? throw new ArgumentNullException()).FirstOrDefault() as IDictionary<string, object>)?["Total"] ?? 0));
-                        }
+                        var query = DbContext.SqlQueryMultiple<dynamic>(
+                            $"DROP TABLE IF EXISTS TEMPORARY_{guid};CREATE TEMPORARY TABLE TEMPORARY_{guid} AS SELECT * FROM ({sql}) AS T;SELECT COUNT(1) AS Total FROM TEMPORARY_{guid};SELECT * FROM TEMPORARY_{guid} AS X {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};DROP TABLE TEMPORARY_{guid};",
+                            parameter);
+                        return (
+                            (query.LastOrDefault() ?? throw new ArgumentNullException())
+                            .Select(o => (o as IDictionary<string, object>).ToEntity<T>()).ToList(),
+                            Convert.ToInt64((query.FirstOrDefault() ?? throw new ArgumentNullException())
+                                            .FirstOrDefault()?.Total ?? 0));
                     }
+                    else
+                    {
+                        var query = DbContext.SqlQueryMultiple<T>(
+                            $"DROP TABLE IF EXISTS TEMPORARY_{guid};CREATE TEMPORARY TABLE TEMPORARY_{guid} AS SELECT * FROM ({sql}) AS T;SELECT COUNT(1) AS Total FROM TEMPORARY_{guid};SELECT * FROM TEMPORARY_{guid} AS X {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};DROP TABLE TEMPORARY_{guid};",
+                            parameter);
+                        return (query.LastOrDefault(),
+                            Convert.ToInt64(
+                                ((query.FirstOrDefault() ?? throw new ArgumentNullException()).FirstOrDefault() as
+                                    IDictionary<string, object>)?["Total"] ?? 0));
+                    }
+                }
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -1761,6 +1802,7 @@ namespace Jory.NetCore.Repository.Repositories
                     ? $"ORDER BY {orderField}"
                     : $"ORDER BY {orderField} {(isAscending ? "ASC" : "DESC")}";
             }
+
             var type = typeof(T);
             switch (DbCategory)
             {
@@ -1768,11 +1810,11 @@ namespace Jory.NetCore.Repository.Repositories
                 {
                     if (orderField.IsNullOrEmpty())
                     {
-                     orderField = "ORDER BY (SELECT 0)";
+                        orderField = "ORDER BY (SELECT 0)";
                     }
 
                     var guid = Guid.NewGuid().ToString().Replace("-", "").ToUpper();
-                  
+
                     if (!type.Name.Contains("Dictionary`2") && type.IsClass && type.Name != "Object" &&
                         type.Name != "String")
                     {
@@ -1826,38 +1868,66 @@ namespace Jory.NetCore.Repository.Repositories
 
                 case DbCategory.Sqlite:
                 {
-                    if (!type.Name.Contains("Dictionary`2") && type.IsClass && type.Name != "Object" && type.Name != "String")
+                    if (!type.Name.Contains("Dictionary`2") && type.IsClass && type.Name != "Object" &&
+                        type.Name != "String")
                     {
-                        var query = DbContext.SqlQueryMultiple<dynamic>($"{sql} SELECT COUNT(1) AS Total FROM T;{sql} SELECT * FROM T {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};", parameter);
-                        return ((query.LastOrDefault() ?? throw new ArgumentNullException()).Select(o => (o as IDictionary<string, object>).ToEntity<T>()).ToList(), Convert.ToInt64((query.FirstOrDefault() ?? throw new ArgumentNullException()).FirstOrDefault()?.Total ?? 0));
+                        var query = DbContext.SqlQueryMultiple<dynamic>(
+                            $"{sql} SELECT COUNT(1) AS Total FROM T;{sql} SELECT * FROM T {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};",
+                            parameter);
+                        return (
+                            (query.LastOrDefault() ?? throw new ArgumentNullException())
+                            .Select(o => (o as IDictionary<string, object>).ToEntity<T>()).ToList(),
+                            Convert.ToInt64((query.FirstOrDefault() ?? throw new ArgumentNullException())
+                                            .FirstOrDefault()?.Total ?? 0));
                     }
                     else
                     {
-                        var query = DbContext.SqlQueryMultiple<T>($"{sql} SELECT COUNT(1) AS Total FROM T;{sql} SELECT * FROM T {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};", parameter);
-                        return (query.LastOrDefault(), Convert.ToInt64(((query.FirstOrDefault() ?? throw new ArgumentNullException()).FirstOrDefault() as IDictionary<string, object>)?["Total"] ?? 0));
+                        var query = DbContext.SqlQueryMultiple<T>(
+                            $"{sql} SELECT COUNT(1) AS Total FROM T;{sql} SELECT * FROM T {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};",
+                            parameter);
+                        return (query.LastOrDefault(),
+                            Convert.ToInt64(
+                                ((query.FirstOrDefault() ?? throw new ArgumentNullException()).FirstOrDefault() as
+                                    IDictionary<string, object>)?["Total"] ?? 0));
                     }
-                    }
+                }
 
                 case DbCategory.Oracle:
                 {
-                    var total = DbContext.SqlQuery<long>($"{sql} SELECT COUNT(1) AS Total FROM T", parameter).FirstOrDefault();
-                    var list = DbContext.SqlQuery<T>($"{sql},R AS (SELECT ROWNUM AS RowNumber,T.* FROM T WHERE ROWNUM <= {pageSize * pageIndex} {orderField}) SELECT * FROM R WHERE RowNumber>={pageSize * (pageIndex - 1) + 1}", parameter);
+                    var total = DbContext.SqlQuery<long>($"{sql} SELECT COUNT(1) AS Total FROM T", parameter)
+                        .FirstOrDefault();
+                    var list = DbContext.SqlQuery<T>(
+                        $"{sql},R AS (SELECT ROWNUM AS RowNumber,T.* FROM T WHERE ROWNUM <= {pageSize * pageIndex} {orderField}) SELECT * FROM R WHERE RowNumber>={pageSize * (pageIndex - 1) + 1}",
+                        parameter);
                     return (list?.ToList(), total);
-                    }
+                }
 
                 case DbCategory.NpgSql:
                 {
-                    if (!type.Name.Contains("Dictionary`2") && type.IsClass && type.Name != "Object" && type.Name != "String")
+                    if (!type.Name.Contains("Dictionary`2") && type.IsClass && type.Name != "Object" &&
+                        type.Name != "String")
                     {
-                        var query = DbContext.SqlQueryMultiple<dynamic>($"{sql} SELECT COUNT(1) AS Total FROM T;{sql} SELECT * FROM T {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};", parameter);
-                        return ((query.LastOrDefault() ?? throw new ArgumentNullException()).Select(o => (o as IDictionary<string, object>).ToEntity<T>()).ToList(), Convert.ToInt64((query.FirstOrDefault() ?? throw new ArgumentNullException()).FirstOrDefault()?.Total ?? 0));
+                        var query = DbContext.SqlQueryMultiple<dynamic>(
+                            $"{sql} SELECT COUNT(1) AS Total FROM T;{sql} SELECT * FROM T {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};",
+                            parameter);
+                        return (
+                            (query.LastOrDefault() ?? throw new ArgumentNullException())
+                            .Select(o => (o as IDictionary<string, object>).ToEntity<T>()).ToList(),
+                            Convert.ToInt64((query.FirstOrDefault() ?? throw new ArgumentNullException())
+                                            .FirstOrDefault()?.Total ?? 0));
                     }
                     else
                     {
-                        var query = DbContext.SqlQueryMultiple<T>($"{sql} SELECT COUNT(1) AS Total FROM T;{sql} SELECT * FROM T {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};", parameter);
-                        return (query.LastOrDefault(), Convert.ToInt64(((query.FirstOrDefault() ?? throw new ArgumentNullException()).FirstOrDefault() as IDictionary<string, object>)?["Total"] ?? 0));
+                        var query = DbContext.SqlQueryMultiple<T>(
+                            $"{sql} SELECT COUNT(1) AS Total FROM T;{sql} SELECT * FROM T {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};",
+                            parameter);
+                        return (query.LastOrDefault(),
+                            Convert.ToInt64(
+                                ((query.FirstOrDefault() ?? throw new ArgumentNullException()).FirstOrDefault() as
+                                    IDictionary<string, object>)?["Total"] ?? 0));
                     }
-                    }
+                }
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -1911,16 +1981,22 @@ namespace Jory.NetCore.Repository.Repositories
                     {
                         if (orderTypes[i] == OrderByDirection.Descending)
                         {
-                            order = i > 0 ? order.ThenByDescending(newExpression.Members[i].Name) : query.OrderByDescending(newExpression.Members[i].Name);
+                            order = i > 0
+                                ? order.ThenByDescending(newExpression.Members[i].Name)
+                                : query.OrderByDescending(newExpression.Members[i].Name);
                         }
                         else
                         {
-                            order = i > 0 ? order.ThenBy(newExpression.Members[i].Name) : query.OrderBy(newExpression.Members[i].Name);
+                            order = i > 0
+                                ? order.ThenBy(newExpression.Members[i].Name)
+                                : query.OrderBy(newExpression.Members[i].Name);
                         }
                     }
                     else
                     {
-                        order = i > 0 ? order.ThenBy(newExpression.Members[i].Name) : query.OrderBy(newExpression.Members[i].Name);
+                        order = i > 0
+                            ? order.ThenBy(newExpression.Members[i].Name)
+                            : query.OrderBy(newExpression.Members[i].Name);
                     }
                 }
 
@@ -1957,16 +2033,22 @@ namespace Jory.NetCore.Repository.Repositories
                     {
                         if (orderTypes[i] == OrderByDirection.Descending)
                         {
-                            order = i > 0 ? order.ThenByDescending(newExpression.Members[i].Name) : query.OrderByDescending(newExpression.Members[i].Name);
+                            order = i > 0
+                                ? order.ThenByDescending(newExpression.Members[i].Name)
+                                : query.OrderByDescending(newExpression.Members[i].Name);
                         }
                         else
                         {
-                            order = i > 0 ? order.ThenBy(newExpression.Members[i].Name) : query.OrderBy(newExpression.Members[i].Name);
+                            order = i > 0
+                                ? order.ThenBy(newExpression.Members[i].Name)
+                                : query.OrderBy(newExpression.Members[i].Name);
                         }
                     }
                     else
                     {
-                        order = i > 0 ? order.ThenBy(newExpression.Members[i].Name) : query.OrderBy(newExpression.Members[i].Name);
+                        order = i > 0
+                            ? order.ThenBy(newExpression.Members[i].Name)
+                            : query.OrderBy(newExpression.Members[i].Name);
                     }
                 }
 
@@ -2013,16 +2095,22 @@ namespace Jory.NetCore.Repository.Repositories
                     {
                         if (orderTypes[i] == OrderByDirection.Descending)
                         {
-                            order = i > 0 ? order.ThenByDescending(newExpression.Members[i].Name) : query.OrderByDescending(newExpression.Members[i].Name);
+                            order = i > 0
+                                ? order.ThenByDescending(newExpression.Members[i].Name)
+                                : query.OrderByDescending(newExpression.Members[i].Name);
                         }
                         else
                         {
-                            order = i > 0 ? order.ThenBy(newExpression.Members[i].Name) : query.OrderBy(newExpression.Members[i].Name);
+                            order = i > 0
+                                ? order.ThenBy(newExpression.Members[i].Name)
+                                : query.OrderBy(newExpression.Members[i].Name);
                         }
                     }
                     else
                     {
-                        order = i > 0 ? order.ThenBy(newExpression.Members[i].Name) : query.OrderBy(newExpression.Members[i].Name);
+                        order = i > 0
+                            ? order.ThenBy(newExpression.Members[i].Name)
+                            : query.OrderBy(newExpression.Members[i].Name);
                     }
                 }
 
@@ -2075,16 +2163,22 @@ namespace Jory.NetCore.Repository.Repositories
                     {
                         if (orderTypes[i] == OrderByDirection.Descending)
                         {
-                            order = i > 0 ? order.ThenByDescending(newExpression.Members[i].Name) : query.OrderByDescending(newExpression.Members[i].Name);
+                            order = i > 0
+                                ? order.ThenByDescending(newExpression.Members[i].Name)
+                                : query.OrderByDescending(newExpression.Members[i].Name);
                         }
                         else
                         {
-                            order = i > 0 ? order.ThenBy(newExpression.Members[i].Name) : query.OrderBy(newExpression.Members[i].Name);
+                            order = i > 0
+                                ? order.ThenBy(newExpression.Members[i].Name)
+                                : query.OrderBy(newExpression.Members[i].Name);
                         }
                     }
                     else
                     {
-                        order = i > 0 ? order.ThenBy(newExpression.Members[i].Name) : query.OrderBy(newExpression.Members[i].Name);
+                        order = i > 0
+                            ? order.ThenBy(newExpression.Members[i].Name)
+                            : query.OrderBy(newExpression.Members[i].Name);
                     }
                 }
 
@@ -2160,23 +2254,31 @@ namespace Jory.NetCore.Repository.Repositories
                     {
                         if (orderTypes[i] == OrderByDirection.Descending)
                         {
-                            order = i > 0 ? order.ThenByDescending(newExpression.Members[i].Name) : query.OrderByDescending(newExpression.Members[i].Name);
+                            order = i > 0
+                                ? order.ThenByDescending(newExpression.Members[i].Name)
+                                : query.OrderByDescending(newExpression.Members[i].Name);
                         }
                         else
                         {
-                            order = i > 0 ? order.ThenBy(newExpression.Members[i].Name) : query.OrderBy(newExpression.Members[i].Name);
+                            order = i > 0
+                                ? order.ThenBy(newExpression.Members[i].Name)
+                                : query.OrderBy(newExpression.Members[i].Name);
                         }
                     }
                     else
                     {
-                        order = i > 0 ? order.ThenBy(newExpression.Members[i].Name) : query.OrderBy(newExpression.Members[i].Name);
+                        order = i > 0
+                            ? order.ThenBy(newExpression.Members[i].Name)
+                            : query.OrderBy(newExpression.Members[i].Name);
                     }
                 }
             }
             //单个字段排序
             else
             {
-                order = orderTypes.FirstOrDefault() == OrderByDirection.Descending ? query.OrderByDescending(orderField) : query.OrderBy(orderField);
+                order = orderTypes.FirstOrDefault() == OrderByDirection.Descending
+                    ? query.OrderByDescending(orderField)
+                    : query.OrderBy(orderField);
             }
 
             //分页
@@ -2213,23 +2315,31 @@ namespace Jory.NetCore.Repository.Repositories
                     {
                         if (orderTypes[i] == OrderByDirection.Descending)
                         {
-                            order = i > 0 ? order.ThenByDescending(newExpression.Members[i].Name) : query.OrderByDescending(newExpression.Members[i].Name);
+                            order = i > 0
+                                ? order.ThenByDescending(newExpression.Members[i].Name)
+                                : query.OrderByDescending(newExpression.Members[i].Name);
                         }
                         else
                         {
-                            order = i > 0 ? order.ThenBy(newExpression.Members[i].Name) : query.OrderBy(newExpression.Members[i].Name);
+                            order = i > 0
+                                ? order.ThenBy(newExpression.Members[i].Name)
+                                : query.OrderBy(newExpression.Members[i].Name);
                         }
                     }
                     else
                     {
-                        order = i > 0 ? order.ThenBy(newExpression.Members[i].Name) : query.OrderBy(newExpression.Members[i].Name);
+                        order = i > 0
+                            ? order.ThenBy(newExpression.Members[i].Name)
+                            : query.OrderBy(newExpression.Members[i].Name);
                     }
                 }
             }
             //单个字段排序
             else
             {
-                order = orderTypes.FirstOrDefault() == OrderByDirection.Descending ? query.OrderByDescending(orderField) : query.OrderBy(orderField);
+                order = orderTypes.FirstOrDefault() == OrderByDirection.Descending
+                    ? query.OrderByDescending(orderField)
+                    : query.OrderBy(orderField);
             }
 
             //分页
@@ -2271,6 +2381,7 @@ namespace Jory.NetCore.Repository.Repositories
                     ? $"ORDER BY {orderField}"
                     : $"ORDER BY {orderField} {(isAscending ? "ASC" : "DESC")}";
             }
+
             var type = typeof(T);
             switch (DbCategory)
             {
@@ -2278,11 +2389,11 @@ namespace Jory.NetCore.Repository.Repositories
                 {
                     if (orderField.IsNullOrEmpty())
                     {
-                      orderField = "ORDER BY (SELECT 0)";
+                        orderField = "ORDER BY (SELECT 0)";
                     }
 
                     var guid = Guid.NewGuid().ToString().Replace("-", "").ToUpper();
-                    
+
                     if (!type.Name.Contains("Dictionary`2") && type.IsClass && type.Name != "Object" &&
                         type.Name != "String")
                     {
@@ -2338,24 +2449,39 @@ namespace Jory.NetCore.Repository.Repositories
 
                 case DbCategory.Sqlite:
                 {
-                   if (!type.Name.Contains("Dictionary`2") && type.IsClass && type.Name != "Object" && type.Name != "String")
+                    if (!type.Name.Contains("Dictionary`2") && type.IsClass && type.Name != "Object" &&
+                        type.Name != "String")
                     {
-                        var query = await DbContext.SqlQueryMultipleAsync<dynamic>($"SELECT COUNT(1) AS Total FROM ({sql}) AS T;SELECT * FROM ({sql}) AS X {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};", parameter);
-                        return ((query.LastOrDefault() ?? throw new ArgumentNullException()).Select(o => (o as IDictionary<string, object>).ToEntity<T>()).ToList(), Convert.ToInt64((query.FirstOrDefault() ?? throw new ArgumentNullException()).FirstOrDefault()?.Total ?? 0));
+                        var query = await DbContext.SqlQueryMultipleAsync<dynamic>(
+                            $"SELECT COUNT(1) AS Total FROM ({sql}) AS T;SELECT * FROM ({sql}) AS X {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};",
+                            parameter);
+                        return (
+                            (query.LastOrDefault() ?? throw new ArgumentNullException())
+                            .Select(o => (o as IDictionary<string, object>).ToEntity<T>()).ToList(),
+                            Convert.ToInt64((query.FirstOrDefault() ?? throw new ArgumentNullException())
+                                            .FirstOrDefault()?.Total ?? 0));
                     }
                     else
                     {
-                        var query = await DbContext.SqlQueryMultipleAsync<T>($"SELECT COUNT(1) AS Total FROM ({sql}) AS T;SELECT * FROM ({sql}) AS X {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};", parameter);
-                        return (query.LastOrDefault(), Convert.ToInt64(((query.FirstOrDefault() ?? throw new ArgumentNullException()).FirstOrDefault() as IDictionary<string, object>)?["Total"] ?? 0));
+                        var query = await DbContext.SqlQueryMultipleAsync<T>(
+                            $"SELECT COUNT(1) AS Total FROM ({sql}) AS T;SELECT * FROM ({sql}) AS X {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};",
+                            parameter);
+                        return (query.LastOrDefault(),
+                            Convert.ToInt64(
+                                ((query.FirstOrDefault() ?? throw new ArgumentNullException()).FirstOrDefault() as
+                                    IDictionary<string, object>)?["Total"] ?? 0));
                     }
-                    }
+                }
 
                 case DbCategory.Oracle:
                 {
-                    var total = (await DbContext.SqlQueryAsync<long>($"SELECT COUNT(1) AS Total FROM ({sql}) T", parameter)).FirstOrDefault();
-                    var list = await DbContext.SqlQueryAsync<T>($"SELECT * FROM (SELECT X.*,ROWNUM AS RowNumber FROM ({sql} {orderField}) X WHERE ROWNUM <= {pageSize * pageIndex}) T WHERE T.RowNumber >= {pageSize * (pageIndex - 1) + 1}", parameter);
+                    var total = (await DbContext.SqlQueryAsync<long>($"SELECT COUNT(1) AS Total FROM ({sql}) T",
+                        parameter)).FirstOrDefault();
+                    var list = await DbContext.SqlQueryAsync<T>(
+                        $"SELECT * FROM (SELECT X.*,ROWNUM AS RowNumber FROM ({sql} {orderField}) X WHERE ROWNUM <= {pageSize * pageIndex}) T WHERE T.RowNumber >= {pageSize * (pageIndex - 1) + 1}",
+                        parameter);
                     return (list?.ToList(), total);
-                    }
+                }
 
                 case DbCategory.NpgSql:
                 {
@@ -2405,8 +2531,11 @@ namespace Jory.NetCore.Repository.Repositories
         {
             if (!orderField.IsNullOrEmpty())
             {
-                orderField = orderField.Contains(@"(/\*(?:|)*?\*/)|(\b(ASC|DESC)\b)", RegexOptions.IgnoreCase) ? $"ORDER BY {orderField}" : $"ORDER BY {orderField} {(isAscending ? "ASC" : "DESC")}";
+                orderField = orderField.Contains(@"(/\*(?:|)*?\*/)|(\b(ASC|DESC)\b)", RegexOptions.IgnoreCase)
+                    ? $"ORDER BY {orderField}"
+                    : $"ORDER BY {orderField} {(isAscending ? "ASC" : "DESC")}";
             }
+
             var type = typeof(T);
             switch (DbCategory)
             {
@@ -2418,7 +2547,7 @@ namespace Jory.NetCore.Repository.Repositories
                     }
 
                     var guid = Guid.NewGuid().ToString().Replace("-", "").ToUpper();
-                   
+
                     if (!type.Name.Contains("Dictionary`2") && type.IsClass && type.Name != "Object" &&
                         type.Name != "String")
                     {
@@ -2445,7 +2574,7 @@ namespace Jory.NetCore.Repository.Repositories
 
                 case DbCategory.MySql:
                 {
-                   if (!type.Name.Contains("Dictionary`2") && type.IsClass && type.Name != "Object" &&
+                    if (!type.Name.Contains("Dictionary`2") && type.IsClass && type.Name != "Object" &&
                         type.Name != "String")
                     {
                         var query = await DbContext.SqlQueryMultipleAsync<dynamic>(
@@ -2498,10 +2627,13 @@ namespace Jory.NetCore.Repository.Repositories
 
                 case DbCategory.Oracle:
                 {
-                    var total = (await DbContext.SqlQueryAsync<long>($"{sql} SELECT COUNT(1) AS Total FROM T", parameter)).FirstOrDefault();
-                    var list = await DbContext.SqlQueryAsync<T>($"{sql},R AS (SELECT ROWNUM AS RowNumber,T.* FROM T WHERE ROWNUM <= {pageSize * pageIndex} {orderField}) SELECT * FROM R WHERE RowNumber>={pageSize * (pageIndex - 1) + 1}", parameter);
+                    var total = (await DbContext.SqlQueryAsync<long>($"{sql} SELECT COUNT(1) AS Total FROM T",
+                        parameter)).FirstOrDefault();
+                    var list = await DbContext.SqlQueryAsync<T>(
+                        $"{sql},R AS (SELECT ROWNUM AS RowNumber,T.* FROM T WHERE ROWNUM <= {pageSize * pageIndex} {orderField}) SELECT * FROM R WHERE RowNumber>={pageSize * (pageIndex - 1) + 1}",
+                        parameter);
                     return (list?.ToList(), total);
-                    }
+                }
 
                 case DbCategory.NpgSql:
                 {
@@ -2512,8 +2644,11 @@ namespace Jory.NetCore.Repository.Repositories
                             $"{sql} SELECT COUNT(1) AS Total FROM T;{sql} SELECT * FROM T {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};",
                             parameter);
                         return (
-                            (query.LastOrDefault() ?? throw new ArgumentNullException()).Select(o => (o as IDictionary<string, object>).ToEntity<T>())
-                                .ToList(), Convert.ToInt64((query.FirstOrDefault() ?? throw new ArgumentNullException()).FirstOrDefault()?.Total ?? 0));
+                            (query.LastOrDefault() ?? throw new ArgumentNullException())
+                            .Select(o => (o as IDictionary<string, object>).ToEntity<T>())
+                            .ToList(),
+                            Convert.ToInt64((query.FirstOrDefault() ?? throw new ArgumentNullException())
+                                            .FirstOrDefault()?.Total ?? 0));
                     }
                     else
                     {
@@ -2522,7 +2657,8 @@ namespace Jory.NetCore.Repository.Repositories
                             parameter);
                         return (query.LastOrDefault(),
                             Convert.ToInt64(
-                                ((query.FirstOrDefault() ?? throw new ArgumentNullException()).FirstOrDefault() as IDictionary<string, object>)?["Total"] ??
+                                ((query.FirstOrDefault() ?? throw new ArgumentNullException()).FirstOrDefault() as
+                                    IDictionary<string, object>)?["Total"] ??
                                 0));
                     }
                 }
@@ -2591,8 +2727,11 @@ namespace Jory.NetCore.Repository.Repositories
         {
             if (!orderField.IsNullOrEmpty())
             {
-                orderField = orderField.Contains(@"(/\*(?:|)*?\*/)|(\b(ASC|DESC)\b)", RegexOptions.IgnoreCase) ? $"ORDER BY {orderField}" : $"ORDER BY {orderField} {(isAscending ? "ASC" : "DESC")}";
+                orderField = orderField.Contains(@"(/\*(?:|)*?\*/)|(\b(ASC|DESC)\b)", RegexOptions.IgnoreCase)
+                    ? $"ORDER BY {orderField}"
+                    : $"ORDER BY {orderField} {(isAscending ? "ASC" : "DESC")}";
             }
+
             switch (DbCategory)
             {
                 case DbCategory.SqlServer:
@@ -2601,42 +2740,53 @@ namespace Jory.NetCore.Repository.Repositories
                     {
                         orderField = "ORDER BY (SELECT 0)";
                     }
+
                     var guid = Guid.NewGuid().ToString().Replace("-", "").ToUpper();
-                    var ds = DbContext.SqlDataSet($"IF OBJECT_ID(N'TEMPDB..#TEMPORARY_{guid}') IS NOT NULL DROP TABLE #TEMPORARY_{guid};SELECT * INTO #TEMPORARY_{guid} FROM ({sql}) AS T;SELECT COUNT(1) AS Total FROM #TEMPORARY_{guid};SELECT * FROM (SELECT ROW_NUMBER() OVER ({orderField}) AS RowNumber, * FROM #TEMPORARY_{guid}) AS N WHERE RowNumber BETWEEN {((pageIndex - 1) * pageSize + 1)} AND {(pageIndex * pageSize)};DROP TABLE #TEMPORARY_{guid};", parameter);
+                    var ds = DbContext.SqlDataSet(
+                        $"IF OBJECT_ID(N'TEMPDB..#TEMPORARY_{guid}') IS NOT NULL DROP TABLE #TEMPORARY_{guid};SELECT * INTO #TEMPORARY_{guid} FROM ({sql}) AS T;SELECT COUNT(1) AS Total FROM #TEMPORARY_{guid};SELECT * FROM (SELECT ROW_NUMBER() OVER ({orderField}) AS RowNumber, * FROM #TEMPORARY_{guid}) AS N WHERE RowNumber BETWEEN {((pageIndex - 1) * pageSize + 1)} AND {(pageIndex * pageSize)};DROP TABLE #TEMPORARY_{guid};",
+                        parameter);
                     return (ds.Tables[1], Convert.ToInt64(ds.Tables[0].Rows[0]["Total"]));
-                    }
+                }
 
                 case DbCategory.MySql:
                 {
-                    
+
                     var guid = Guid.NewGuid().ToString().Replace("-", "").ToUpper();
                     var ds = DbContext.SqlDataSet(
                         $"DROP TEMPORARY TABLE IF EXISTS $TEMPORARY_{guid};CREATE TEMPORARY TABLE $TEMPORARY_{guid} SELECT * FROM ({sql}) AS T;SELECT COUNT(1) AS Total FROM $TEMPORARY_{guid};SELECT * FROM $TEMPORARY_{guid} AS X {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};DROP TABLE $TEMPORARY_{guid};",
                         parameter);
                     return (ds.Tables[1], Convert.ToInt64(ds.Tables[0].Rows[0]["Total"]));
-                    }
+                }
 
                 case DbCategory.Sqlite:
-                    {
-                       
-                        var ds = DbContext.SqlDataSet($"SELECT COUNT(1) AS Total FROM ({sql}) AS T;SELECT * FROM ({sql}) AS X {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};", parameter);
-                        return (ds.Tables[1], Convert.ToInt64(ds.Tables[0].Rows[0]["Total"]));
-                    }
+                {
+
+                    var ds = DbContext.SqlDataSet(
+                        $"SELECT COUNT(1) AS Total FROM ({sql}) AS T;SELECT * FROM ({sql}) AS X {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};",
+                        parameter);
+                    return (ds.Tables[1], Convert.ToInt64(ds.Tables[0].Rows[0]["Total"]));
+                }
 
                 case DbCategory.Oracle:
                 {
-                   
-                    var total = DbContext.SqlQuery<long>($"SELECT COUNT(1) AS Total FROM ({sql}) T", parameter).FirstOrDefault();
-                    var table = DbContext.SqlDataTable($"SELECT * FROM (SELECT X.*,ROWNUM AS RowNumber FROM ({sql} {orderField}) X WHERE ROWNUM <= {pageSize * pageIndex}) T WHERE T.RowNumber >= {pageSize * (pageIndex - 1) + 1}", parameter);
+
+                    var total = DbContext.SqlQuery<long>($"SELECT COUNT(1) AS Total FROM ({sql}) T", parameter)
+                        .FirstOrDefault();
+                    var table = DbContext.SqlDataTable(
+                        $"SELECT * FROM (SELECT X.*,ROWNUM AS RowNumber FROM ({sql} {orderField}) X WHERE ROWNUM <= {pageSize * pageIndex}) T WHERE T.RowNumber >= {pageSize * (pageIndex - 1) + 1}",
+                        parameter);
                     return (table, total);
-                    }
+                }
 
                 case DbCategory.NpgSql:
                 {
                     var guid = Guid.NewGuid().ToString().Replace("-", "").ToUpper();
-                    var ds = DbContext.SqlDataSet($"DROP TABLE IF EXISTS TEMPORARY_{guid};CREATE TEMPORARY TABLE TEMPORARY_{guid} AS SELECT * FROM ({sql}) AS T;SELECT COUNT(1) AS Total FROM TEMPORARY_{guid};SELECT * FROM TEMPORARY_{guid} AS X {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};DROP TABLE TEMPORARY_{guid};", parameter);
+                    var ds = DbContext.SqlDataSet(
+                        $"DROP TABLE IF EXISTS TEMPORARY_{guid};CREATE TEMPORARY TABLE TEMPORARY_{guid} AS SELECT * FROM ({sql}) AS T;SELECT COUNT(1) AS Total FROM TEMPORARY_{guid};SELECT * FROM TEMPORARY_{guid} AS X {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};DROP TABLE TEMPORARY_{guid};",
+                        parameter);
                     return (ds.Tables[1], Convert.ToInt64(ds.Tables[0].Rows[0]["Total"]));
-                    }
+                }
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -2657,8 +2807,11 @@ namespace Jory.NetCore.Repository.Repositories
         {
             if (!orderField.IsNullOrEmpty())
             {
-                orderField = orderField.Contains(@"(/\*(?:|)*?\*/)|(\b(ASC|DESC)\b)", RegexOptions.IgnoreCase) ? $"ORDER BY {orderField}" : $"ORDER BY {orderField} {(isAscending ? "ASC" : "DESC")}";
+                orderField = orderField.Contains(@"(/\*(?:|)*?\*/)|(\b(ASC|DESC)\b)", RegexOptions.IgnoreCase)
+                    ? $"ORDER BY {orderField}"
+                    : $"ORDER BY {orderField} {(isAscending ? "ASC" : "DESC")}";
             }
+
             switch (DbCategory)
             {
                 case DbCategory.SqlServer:
@@ -2667,10 +2820,13 @@ namespace Jory.NetCore.Repository.Repositories
                     {
                         orderField = "ORDER BY (SELECT 0)";
                     }
+
                     var guid = Guid.NewGuid().ToString().Replace("-", "").ToUpper();
-                    var ds = DbContext.SqlDataSet($"IF OBJECT_ID(N'TEMPDB..#TEMPORARY_{guid}') IS NOT NULL DROP TABLE #TEMPORARY_{guid};{sql} SELECT * INTO #TEMPORARY_{guid} FROM T;SELECT COUNT(1) AS Total FROM #TEMPORARY_{guid};WITH R AS (SELECT ROW_NUMBER() OVER ({orderField}) AS RowNumber,* FROM #TEMPORARY_{guid}) SELECT * FROM R  WHERE RowNumber BETWEEN {((pageIndex - 1) * pageSize + 1)} AND RowNumber {(pageIndex * pageSize)};DROP TABLE #TEMPORARY_{guid};", parameter);
+                    var ds = DbContext.SqlDataSet(
+                        $"IF OBJECT_ID(N'TEMPDB..#TEMPORARY_{guid}') IS NOT NULL DROP TABLE #TEMPORARY_{guid};{sql} SELECT * INTO #TEMPORARY_{guid} FROM T;SELECT COUNT(1) AS Total FROM #TEMPORARY_{guid};WITH R AS (SELECT ROW_NUMBER() OVER ({orderField}) AS RowNumber,* FROM #TEMPORARY_{guid}) SELECT * FROM R  WHERE RowNumber BETWEEN {((pageIndex - 1) * pageSize + 1)} AND RowNumber {(pageIndex * pageSize)};DROP TABLE #TEMPORARY_{guid};",
+                        parameter);
                     return (ds.Tables[1], Convert.ToInt64(ds.Tables[0].Rows[0]["Total"]));
-                    }
+                }
 
                 case DbCategory.MySql:
                 {
@@ -2678,7 +2834,7 @@ namespace Jory.NetCore.Repository.Repositories
                         $"{sql} SELECT COUNT(1) AS Total FROM T;{sql} SELECT * FROM T {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};",
                         parameter);
                     return (ds.Tables[1], Convert.ToInt64(ds.Tables[0].Rows[0]["Total"]));
-                    }
+                }
 
                 case DbCategory.Sqlite:
                 {
@@ -2698,16 +2854,21 @@ namespace Jory.NetCore.Repository.Repositories
 
                 case DbCategory.Oracle:
                 {
-                    var total = DbContext.SqlQuery<long>($"{sql} SELECT COUNT(1) AS Total FROM T", parameter).FirstOrDefault();
-                    var table = DbContext.SqlDataTable($"{sql},R AS (SELECT ROWNUM AS RowNumber,T.* FROM T WHERE ROWNUM <= {pageSize * pageIndex} {orderField}) SELECT * FROM R WHERE RowNumber>={pageSize * (pageIndex - 1) + 1}", parameter);
+                    var total = DbContext.SqlQuery<long>($"{sql} SELECT COUNT(1) AS Total FROM T", parameter)
+                        .FirstOrDefault();
+                    var table = DbContext.SqlDataTable(
+                        $"{sql},R AS (SELECT ROWNUM AS RowNumber,T.* FROM T WHERE ROWNUM <= {pageSize * pageIndex} {orderField}) SELECT * FROM R WHERE RowNumber>={pageSize * (pageIndex - 1) + 1}",
+                        parameter);
                     return (table, total);
-                    }
+                }
 
                 case DbCategory.NpgSql:
                 {
-                    var ds = DbContext.SqlDataSet($"{sql} SELECT COUNT(1) AS Total FROM T;{sql} SELECT * FROM T {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};", parameter);
+                    var ds = DbContext.SqlDataSet(
+                        $"{sql} SELECT COUNT(1) AS Total FROM T;{sql} SELECT * FROM T {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};",
+                        parameter);
                     return (ds.Tables[1], Convert.ToInt64(ds.Tables[0].Rows[0]["Total"]));
-                    }
+                }
 
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -2769,8 +2930,11 @@ namespace Jory.NetCore.Repository.Repositories
         {
             if (!orderField.IsNullOrEmpty())
             {
-                orderField = orderField.Contains(@"(/\*(?:|)*?\*/)|(\b(ASC|DESC)\b)", RegexOptions.IgnoreCase) ? $"ORDER BY {orderField}" : $"ORDER BY {orderField} {(isAscending ? "ASC" : "DESC")}";
+                orderField = orderField.Contains(@"(/\*(?:|)*?\*/)|(\b(ASC|DESC)\b)", RegexOptions.IgnoreCase)
+                    ? $"ORDER BY {orderField}"
+                    : $"ORDER BY {orderField} {(isAscending ? "ASC" : "DESC")}";
             }
+
             switch (DbCategory)
             {
                 case DbCategory.SqlServer:
@@ -2779,10 +2943,13 @@ namespace Jory.NetCore.Repository.Repositories
                     {
                         orderField = "ORDER BY (SELECT 0)";
                     }
+
                     var guid = Guid.NewGuid().ToString().Replace("-", "").ToUpper();
-                    var ds = await DbContext.SqlDataSetAsync($"IF OBJECT_ID(N'TEMPDB..#TEMPORARY_{guid}') IS NOT NULL DROP TABLE #TEMPORARY_{guid};SELECT * INTO #TEMPORARY_{guid} FROM ({sql}) AS T;SELECT COUNT(1) AS Total FROM #TEMPORARY_{guid};SELECT * FROM (SELECT ROW_NUMBER() OVER ({orderField}) AS RowNumber, * FROM #TEMPORARY_{guid}) AS N WHERE RowNumber BETWEEN {((pageIndex - 1) * pageSize + 1)} AND {(pageIndex * pageSize)};DROP TABLE #TEMPORARY_{guid};", parameter);
+                    var ds = await DbContext.SqlDataSetAsync(
+                        $"IF OBJECT_ID(N'TEMPDB..#TEMPORARY_{guid}') IS NOT NULL DROP TABLE #TEMPORARY_{guid};SELECT * INTO #TEMPORARY_{guid} FROM ({sql}) AS T;SELECT COUNT(1) AS Total FROM #TEMPORARY_{guid};SELECT * FROM (SELECT ROW_NUMBER() OVER ({orderField}) AS RowNumber, * FROM #TEMPORARY_{guid}) AS N WHERE RowNumber BETWEEN {((pageIndex - 1) * pageSize + 1)} AND {(pageIndex * pageSize)};DROP TABLE #TEMPORARY_{guid};",
+                        parameter);
                     return (ds.Tables[1], Convert.ToInt64(ds.Tables[0].Rows[0]["Total"]));
-                    }
+                }
 
                 case DbCategory.MySql:
                 {
@@ -2791,27 +2958,34 @@ namespace Jory.NetCore.Repository.Repositories
                         $"DROP TEMPORARY TABLE IF EXISTS $TEMPORARY_{guid};CREATE TEMPORARY TABLE $TEMPORARY_{guid} SELECT * FROM ({sql}) AS T;SELECT COUNT(1) AS Total FROM $TEMPORARY_{guid};SELECT * FROM $TEMPORARY_{guid} AS X {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};DROP TABLE $TEMPORARY_{guid};",
                         parameter);
                     return (ds.Tables[1], Convert.ToInt64(ds.Tables[0].Rows[0]["Total"]));
-                    }
+                }
 
                 case DbCategory.Sqlite:
-                    {
-                       var ds = await DbContext.SqlDataSetAsync($"SELECT COUNT(1) AS Total FROM ({sql}) AS T;SELECT * FROM ({sql}) AS X {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};", parameter);
-                        return (ds.Tables[1], Convert.ToInt64(ds.Tables[0].Rows[0]["Total"]));
-                    }
+                {
+                    var ds = await DbContext.SqlDataSetAsync(
+                        $"SELECT COUNT(1) AS Total FROM ({sql}) AS T;SELECT * FROM ({sql}) AS X {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};",
+                        parameter);
+                    return (ds.Tables[1], Convert.ToInt64(ds.Tables[0].Rows[0]["Total"]));
+                }
 
                 case DbCategory.Oracle:
                 {
-                    var total = (await DbContext.SqlQueryAsync<long>($"SELECT COUNT(1) AS Total FROM ({sql}) T", parameter)).FirstOrDefault();
-                    var table = await DbContext.SqlDataTableAsync($"SELECT * FROM (SELECT X.*,ROWNUM AS RowNumber FROM ({sql} {orderField}) X WHERE ROWNUM <= {pageSize * pageIndex}) T WHERE T.RowNumber >= {pageSize * (pageIndex - 1) + 1}", parameter);
+                    var total = (await DbContext.SqlQueryAsync<long>($"SELECT COUNT(1) AS Total FROM ({sql}) T",
+                        parameter)).FirstOrDefault();
+                    var table = await DbContext.SqlDataTableAsync(
+                        $"SELECT * FROM (SELECT X.*,ROWNUM AS RowNumber FROM ({sql} {orderField}) X WHERE ROWNUM <= {pageSize * pageIndex}) T WHERE T.RowNumber >= {pageSize * (pageIndex - 1) + 1}",
+                        parameter);
                     return (table, total);
-                    }
+                }
 
                 case DbCategory.NpgSql:
                 {
                     var guid = Guid.NewGuid().ToString().Replace("-", "").ToUpper();
-                    var ds = await DbContext.SqlDataSetAsync($"DROP TABLE IF EXISTS TEMPORARY_{guid};CREATE TEMPORARY TABLE TEMPORARY_{guid} AS SELECT * FROM ({sql}) AS T;SELECT COUNT(1) AS Total FROM TEMPORARY_{guid};SELECT * FROM TEMPORARY_{guid} AS X {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};DROP TABLE TEMPORARY_{guid};", parameter);
+                    var ds = await DbContext.SqlDataSetAsync(
+                        $"DROP TABLE IF EXISTS TEMPORARY_{guid};CREATE TEMPORARY TABLE TEMPORARY_{guid} AS SELECT * FROM ({sql}) AS T;SELECT COUNT(1) AS Total FROM TEMPORARY_{guid};SELECT * FROM TEMPORARY_{guid} AS X {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};DROP TABLE TEMPORARY_{guid};",
+                        parameter);
                     return (ds.Tables[1], Convert.ToInt64(ds.Tables[0].Rows[0]["Total"]));
-                    }
+                }
 
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -2833,47 +3007,60 @@ namespace Jory.NetCore.Repository.Repositories
         {
             if (!orderField.IsNullOrEmpty())
             {
-                orderField = orderField.Contains(@"(/\*(?:|)*?\*/)|(\b(ASC|DESC)\b)", RegexOptions.IgnoreCase) ? $"ORDER BY {orderField}" : $"ORDER BY {orderField} {(isAscending ? "ASC" : "DESC")}";
+                orderField = orderField.Contains(@"(/\*(?:|)*?\*/)|(\b(ASC|DESC)\b)", RegexOptions.IgnoreCase)
+                    ? $"ORDER BY {orderField}"
+                    : $"ORDER BY {orderField} {(isAscending ? "ASC" : "DESC")}";
             }
+
             switch (DbCategory)
             {
                 case DbCategory.SqlServer:
                 {
                     if (orderField.IsNullOrEmpty())
                     {
-                     orderField = "ORDER BY (SELECT 0)";
+                        orderField = "ORDER BY (SELECT 0)";
                     }
+
                     var guid = Guid.NewGuid().ToString().Replace("-", "").ToUpper();
-                    var ds = await DbContext.SqlDataSetAsync($"IF OBJECT_ID(N'TEMPDB..#TEMPORARY_{guid}') IS NOT NULL DROP TABLE #TEMPORARY_{guid};{sql} SELECT * INTO #TEMPORARY_{guid} FROM T;SELECT COUNT(1) AS Total FROM #TEMPORARY_{guid};WITH R AS (SELECT ROW_NUMBER() OVER ({orderField}) AS RowNumber,* FROM #TEMPORARY_{guid}) SELECT * FROM R  WHERE RowNumber BETWEEN {((pageIndex - 1) * pageSize + 1)} AND RowNumber {(pageIndex * pageSize)};DROP TABLE #TEMPORARY_{guid};", parameter);
+                    var ds = await DbContext.SqlDataSetAsync(
+                        $"IF OBJECT_ID(N'TEMPDB..#TEMPORARY_{guid}') IS NOT NULL DROP TABLE #TEMPORARY_{guid};{sql} SELECT * INTO #TEMPORARY_{guid} FROM T;SELECT COUNT(1) AS Total FROM #TEMPORARY_{guid};WITH R AS (SELECT ROW_NUMBER() OVER ({orderField}) AS RowNumber,* FROM #TEMPORARY_{guid}) SELECT * FROM R  WHERE RowNumber BETWEEN {((pageIndex - 1) * pageSize + 1)} AND RowNumber {(pageIndex * pageSize)};DROP TABLE #TEMPORARY_{guid};",
+                        parameter);
                     return (ds.Tables[1], Convert.ToInt64(ds.Tables[0].Rows[0]["Total"]));
-                    }
+                }
 
                 case DbCategory.MySql:
                 {
-                   var ds = await DbContext.SqlDataSetAsync(
+                    var ds = await DbContext.SqlDataSetAsync(
                         $"{sql} SELECT COUNT(1) AS Total FROM T;{sql} SELECT * FROM T {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};",
                         parameter);
                     return (ds.Tables[1], Convert.ToInt64(ds.Tables[0].Rows[0]["Total"]));
-                    }
+                }
 
                 case DbCategory.Sqlite:
-                    {
-                        var ds = await DbContext.SqlDataSetAsync($"{sql} SELECT COUNT(1) AS Total FROM T;{sql} SELECT * FROM T {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};", parameter);
-                        return (ds.Tables[1], Convert.ToInt64(ds.Tables[0].Rows[0]["Total"]));
-                    }
+                {
+                    var ds = await DbContext.SqlDataSetAsync(
+                        $"{sql} SELECT COUNT(1) AS Total FROM T;{sql} SELECT * FROM T {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};",
+                        parameter);
+                    return (ds.Tables[1], Convert.ToInt64(ds.Tables[0].Rows[0]["Total"]));
+                }
 
                 case DbCategory.Oracle:
                 {
-                    var total = (await DbContext.SqlQueryAsync<long>($"{sql} SELECT COUNT(1) AS Total FROM T", parameter)).FirstOrDefault();
-                    var table = await DbContext.SqlDataTableAsync($"{sql},R AS (SELECT ROWNUM AS RowNumber,T.* FROM T WHERE ROWNUM <= {pageSize * pageIndex} {orderField}) SELECT * FROM R WHERE RowNumber>={pageSize * (pageIndex - 1) + 1}", parameter);
+                    var total = (await DbContext.SqlQueryAsync<long>($"{sql} SELECT COUNT(1) AS Total FROM T",
+                        parameter)).FirstOrDefault();
+                    var table = await DbContext.SqlDataTableAsync(
+                        $"{sql},R AS (SELECT ROWNUM AS RowNumber,T.* FROM T WHERE ROWNUM <= {pageSize * pageIndex} {orderField}) SELECT * FROM R WHERE RowNumber>={pageSize * (pageIndex - 1) + 1}",
+                        parameter);
                     return (table, total);
-                    }
+                }
 
                 case DbCategory.NpgSql:
                 {
-                   var ds = await DbContext.SqlDataSetAsync($"{sql} SELECT COUNT(1) AS Total FROM T;{sql} SELECT * FROM T {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};", parameter);
+                    var ds = await DbContext.SqlDataSetAsync(
+                        $"{sql} SELECT COUNT(1) AS Total FROM T;{sql} SELECT * FROM T {orderField} LIMIT {pageSize} OFFSET {(pageSize * (pageIndex - 1))};",
+                        parameter);
                     return (ds.Tables[1], Convert.ToInt64(ds.Tables[0].Rows[0]["Total"]));
-                    }
+                }
 
                 default:
                     throw new ArgumentOutOfRangeException();

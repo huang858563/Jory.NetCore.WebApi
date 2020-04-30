@@ -4,22 +4,29 @@ using System.Runtime.Serialization;
 
 namespace Jory.NetCore.Model.Entities
 {
-    [DataContract]
     [Table("ADUserT")]
     public class ADUserT
     {
-        [DataMember]
         [Key]
-        public string UserName { get; set; } = default!;
+        [Required]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
+        [Required]
+        public string LoginName { get; set; } = default!;
         
         [NotMapped]
-        [DataMember]
-        public string? Password { get; set; }
-      
+        public string? LoginPwd { get; set; }
+        
         [IgnoreDataMember]
-        public string? PasswordHash { get; set; }
+        public string? LoginPwdHash { get; set; }
 
-        [DataMember]
+        public string UserName { get; set; }
+
+        public string Phone { get; set; }
+
+        public string Email { get; set; }
+
         public string? Role { get; set; }
 
         public static string GetRole(string? role)

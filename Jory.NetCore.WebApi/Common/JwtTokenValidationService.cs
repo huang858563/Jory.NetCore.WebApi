@@ -1,13 +1,13 @@
-﻿using Jory.NetCore.WebApi.Models;
+﻿using Jory.NetCore.Model.Entities;
 using Jory.NetCore.WebApi.Options;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Jory.NetCore.Model.Entities;
 
 namespace Jory.NetCore.WebApi.Common
 {
@@ -24,9 +24,14 @@ namespace Jory.NetCore.WebApi.Common
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, "mc00118@mail.com"),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
+                new Claim(JwtRegisteredClaimNames.Sub, user.LoginName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
+                new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToUniversalTime().ToString(CultureInfo.InvariantCulture),ClaimValueTypes.Integer64),
+                //new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                //用户名
+                new Claim(ClaimTypes.Name,user.LoginName),
+                //角色
+                new Claim(ClaimTypes.Role,user.Role)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtBearerOption.SecurityKey));
@@ -48,9 +53,14 @@ namespace Jory.NetCore.WebApi.Common
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, "mc00118@mail.com"),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
+                new Claim(JwtRegisteredClaimNames.Sub, user.LoginName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
+                new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToUniversalTime().ToString(CultureInfo.InvariantCulture),ClaimValueTypes.Integer64),
+                //new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                //用户名
+                new Claim(ClaimTypes.Name,user.LoginName),
+                //角色
+                new Claim(ClaimTypes.Role,user.Role)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtBearerOption.SecurityKey));

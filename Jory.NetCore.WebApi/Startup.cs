@@ -1,4 +1,7 @@
-﻿using Jory.NetCore.Model.Data;
+﻿using Autofac;
+using Jory.NetCore.Core.Enums;
+using Jory.NetCore.Core.Interfaces;
+using Jory.NetCore.Model.Data;
 using Jory.NetCore.WebApi.Common;
 using Jory.NetCore.WebApi.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,7 +16,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.IO;
+using System.Reflection;
 using System.Text;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace Jory.NetCore.WebApi
 {
@@ -30,19 +37,35 @@ namespace Jory.NetCore.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<JwtBearerOption>(Configuration.GetSection("JwtBearer"));
+            var jwtBearerOption = Configuration.GetSection("JwtBearer").Get<JwtBearerOption>();
+
             services.AddControllers(options =>
             {
+                if (jwtBearerOption.Enabled)
+                {
+                    options.Filters.Add(new AuthorizeFilter());
+                }
+
                 //options.ReturnHttpNotAcceptable = true;
                 //options.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
             }).AddXmlDataContractSerializerFormatters();
 
-            //services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             //services.AddTransient<ICompanyRepository, CompanyRepository>();
-            services.AddDbContext<JoryNetCoreDbContext>(options => {
-                options.UseSqlite("Data Source=JoryDB.db");
+            services.AddDbContext<JoryNetCoreDbContext>(options =>
+            {
+                if (bool.Parse(Configuration["EFCoreLogEnabled"]))
+                {
+                    options.UseLoggerFactory(new LoggerFactory(new[] {new EfCoreLoggerProvider()}));
+                }
+
+                options.UseSqlite("Data Source=JoryDB.db", p => p.MigrationsAssembly("Jory.NetCore.Model"));
             });
-            //services.AddScoped<JwtTokenValidationService>();
-            services.AddScoped<IJwtTokenValidationService, JwtTokenValidationService>();
+
+            //services.AddScoped<IJwtTokenValidationService, JwtTokenValidationService>();
+           // services.AddScoped<IBaseRep, Bas>();
+            //services.AddScoped<IUserRep, UserRep>(x=>new UserRep(x.GetService<JoryNetCoreDbContext>(), DbCategory.Sqlite ));
 
             services.AddDistributedMemoryCache();
 
@@ -64,9 +87,7 @@ namespace Jory.NetCore.WebApi
 
             });
 
-            services.Configure<JwtBearerOption>(Configuration.GetSection("JwtBearer"));
-            var jwtBearerOption = Configuration.GetSection("JwtBearer").Get<JwtBearerOption>();
-
+          
             if (jwtBearerOption.Enabled)
             {
                 services.AddAuthentication(options =>
@@ -100,6 +121,17 @@ namespace Jory.NetCore.WebApi
                         };
                     });
             }
+            else
+            {
+                services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme =
+                        Microsoft.AspNetCore.Server.IISIntegration.IISDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme =
+                        Microsoft.AspNetCore.Server.IISIntegration.IISDefaults.AuthenticationScheme;
+                });
+                //services.AddAuthorization();
+            }
 
             services.AddSwaggerGen(c =>
             {
@@ -111,29 +143,33 @@ namespace Jory.NetCore.WebApi
                     Contact = new OpenApiContact { Name = "jory", Email = "", Url = new Uri("https://www.jory.top") }
                     //License = new OpenApiLicense { Name = "jory", Url = new Uri("http://jory.cnblogs.com") }
                 });
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                if (jwtBearerOption.Enabled)
                 {
-                    Description = "在下框中输入请求头中需要添加Jwt授权Token：Bearer Token",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    BearerFormat = "JWT",
-                    Scheme = JwtBearerDefaults.AuthenticationScheme
-                });
-
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
+                    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                     {
-                        new OpenApiSecurityScheme
+                        Description = "在下框中输入请求头中需要添加Jwt授权Token：Bearer Token",
+                        Name = "Authorization",
+                        In = ParameterLocation.Header,
+                        Type = SecuritySchemeType.ApiKey,
+                        BearerFormat = "JWT",
+                        Scheme = JwtBearerDefaults.AuthenticationScheme
+                    });
+
+                    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                    {
                         {
-                            Reference = new OpenApiReference {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        new string[] { }
-                    }
-                });
+                            new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "Bearer"
+                                }
+                            },
+                            new string[] { }
+                        }
+                    });
+                }
 
                 var basePath = Path.GetDirectoryName(typeof(Program).Assembly.Location);
                 var xmlPath = Path.Combine(basePath, "Jory.NetCore.WebApi.xml"); //这个就是刚刚配置的xml文件名
@@ -180,7 +216,7 @@ namespace Jory.NetCore.WebApi
                     await context.Response.WriteAsync("Unexpected Error");
                 }));
             }
-            
+
             app.UseRouting();
 
             app.UseCors("AllowAll");
@@ -195,10 +231,20 @@ namespace Jory.NetCore.WebApi
                 c.RoutePrefix = string.Empty;
             });
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+        }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.RegisterType<JwtTokenValidationService>().As<IJwtTokenValidationService>();
+
+            var repository = Assembly.Load("Jory.NetCore.Repository");
+            builder.RegisterAssemblyTypes(repository).Where(t =>
+                    typeof(IRepository).IsAssignableFrom(t)
+                    && t != typeof(IRepository)
+                    && !t.IsAbstract).AsImplementedInterfaces()
+                .WithParameter((pi, c) => pi.Name == "context", (pi, c) => c.Resolve<JoryNetCoreDbContext>())
+                .WithParameter("dbCategory", DbCategory.Sqlite); //.InstancePerDependency();
         }
     }
 }
